@@ -25,16 +25,30 @@ from rest_framework import status
 
 """
 version1.3
-"""
+
 from rest_framework import mixins
+from rest_framework import generics
+"""
 from rest_framework import generics
 
 from .models import Snippet
 from .serializers import SnippetSerializer
 
+"""version1.4 generics"""
+class SnippetList(generics.ListCreateAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+class SnippetDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+
+
 """
 version1.3 mixin/generics
-"""
+
 class SnippetList(mixins.ListModelMixin,
     mixins.CreateModelMixin,
     generics.GenericAPIView):
@@ -64,7 +78,7 @@ class SnippetDetail(mixins.RetrieveModelMixin,
     
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
-
+"""
 
 
 """
