@@ -13,23 +13,64 @@ from rest_framework.decorators import api_view
 """
 """
 version1.2
-"""
 from django.http import Http404
 from rest_framework.views import APIView
+"""
 
+"""
+version1.0,1,2
 from rest_framework.response import Response
 from rest_framework import status
+"""
+
+"""
+version1.3
+"""
+from rest_framework import mixins
+from rest_framework import generics
+
 from .models import Snippet
 from .serializers import SnippetSerializer
 
 """
-version1.2 Class based
+version1.3 mixin/generics
 """
+class SnippetList(mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    generics.GenericAPIView):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+    
+
+class SnippetDetail(mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.CreateAPIView):
+
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+
+"""
+version1.2 Class based
 
 class SnippetList(APIView):
-    """
-    Class
-    """
     
     def get(self, request, format=None):
         snippets = Snippet.objects.all()
@@ -45,9 +86,6 @@ class SnippetList(APIView):
 
 
 class SnippetDetail(APIView):
-    """"
-    Class
-    """
 
     def get_object(self, pk):
         try:
@@ -72,6 +110,7 @@ class SnippetDetail(APIView):
         snippet = get_object(pk)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+"""
 
 """
 version1.1 Function based
